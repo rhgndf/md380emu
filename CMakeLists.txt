@@ -23,22 +23,27 @@ if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/firmware/D002.032.bin)
 endif()
 
 add_custom_command(
-    OUTPUT firmware.c
+    OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/firmware/firmware.c
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/firmware
     COMMAND xxd -i -n firmware D002.032.bin  > firmware.c
     COMMENT "Compiling firmware:D002.032.bin to binary")
 
 add_custom_command(
-    OUTPUT sram.c
+    OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/firmware/sram.c
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/firmware
     COMMAND xxd -i -n sram d02032-core.img > sram.c
     COMMENT "Compiling sram:d02032-core.img to binary")
 
-add_custom_target(firmware DEPENDS firmware.c sram.c)
+add_custom_target(firmware DEPENDS firmware/firmware.c firmware/sram.c)
 
 set(DYNARMIC_TESTS OFF CACHE BOOL "")
 set(DYNARMIC_USE_ARMV7 ON CACHE BOOL "")
 add_subdirectory(dynarmic)
 
-add_executable(md380emu main.cpp firmware/firmware.c firmware/sram.c)
+set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/firmware/firmware.c
+                            PROPERTIES GENERATED TRUE)
+set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/firmware/sram.c
+                            PROPERTIES GENERATED TRUE)
+
+add_executable(md380emu main.cpp ${CMAKE_CURRENT_SOURCE_DIR}/firmware/firmware.c ${CMAKE_CURRENT_SOURCE_DIR}/firmware/sram.c)
 target_link_libraries(md380emu PRIVATE dynarmic)
