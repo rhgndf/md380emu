@@ -10,3 +10,16 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 CMakeUserPresets.json
+build/
+
+.vscode/
+
+# Firmware files
+firmware/D002.032.bin
+firmware/firmware.c
+firmware/sram.c
+
+# Audio files
+*.wav
+*.raw
+*.amb
