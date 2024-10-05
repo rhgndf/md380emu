@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.12)
+include(FetchContent)
 project(md380emu)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -38,7 +39,12 @@ add_custom_target(firmware DEPENDS firmware/firmware.c firmware/sram.c)
 
 set(DYNARMIC_TESTS OFF CACHE BOOL "")
 set(DYNARMIC_USE_ARMV7 ON CACHE BOOL "")
-add_subdirectory(dynarmic)
+FetchContent_Declare(
+    dynarmic
+    GIT_REPOSITORY https://github.com/yuzu-mirror/dynarmic.git
+    GIT_TAG master
+)
+FetchContent_MakeAvailable(dynarmic)
 
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/firmware/firmware.c
                             PROPERTIES GENERATED TRUE)
